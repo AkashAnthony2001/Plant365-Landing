@@ -7,6 +7,8 @@ module.exports = {
       backgroundColor: {
         accent: "white",
         background: "#201F1F",
+        bgGreen : '#27B643',
+        bgGray : '#ECECEC'
       },
       colors: {
         fontGray: "#9CA3AF",

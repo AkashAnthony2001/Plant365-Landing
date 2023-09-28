@@ -12,15 +12,15 @@
   
   .verify-dialog-content {
     background: white;
-    padding: 40px 40px;
+    padding: 80px 20px;
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     text-align: center;
     color:#7d8692;
   }
   .otp-input{
-    width:30px;
-    height:30px;
+    width:50px;
+    height:45px;
     padding:0px;
     margin:2px;
     border: 2px solid #44b63b;
