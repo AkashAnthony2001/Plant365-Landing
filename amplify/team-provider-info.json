@@ -1,0 +1,31 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-meyi-dev-141846-authRole",
+      "UnauthRoleArn": "arn:aws:iam::137036865518:role/amplify-meyi-dev-141846-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::137036865518:role/amplify-meyi-dev-141846-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-meyi-dev-141846-deployment",
+      "UnauthRoleName": "amplify-meyi-dev-141846-unauthRole",
+      "StackName": "amplify-meyi-dev-141846",
+      "StackId": "arn:aws:cloudformation:ap-south-1:137036865518:stack/amplify-meyi-dev-141846/e2a33d70-b32a-11ec-9984-0ab147a67482",
+      "AmplifyAppId": "d3212hqgu22h3l"
+    },
+    "categories": {
+      "auth": {
+        "meyi726f1f25": {
+          "userPoolId": "ap-south-1_LdYoGKYNJ",
+          "userPoolName": "dev-meyi-contractors",
+          "webClientId": "3bh26fqrk4606cv1fcp5pjc97d",
+          "nativeClientId": "3bh26fqrk4606cv1fcp5pjc97d"
+        },
+        "meyi8341aaa9": {
+          "userPoolId": "ap-south-1_LdYoGKYNJ",
+          "userPoolName": "dev-meyi-contractors",
+          "webClientId": "3bh26fqrk4606cv1fcp5pjc97d",
+          "nativeClientId": "3bh26fqrk4606cv1fcp5pjc97d"
+        }
+      }
+    }
+  }
+}

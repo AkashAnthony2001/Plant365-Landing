@@ -1,0 +1,27 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "meyi8341aaa9",
+  "serviceType": "imported",
+  "region": "ap-south-1",
+  "usernameAttributes": [
+    "email",
+    "phone_number"
+  ],
+  "authProvidersUserPool": [
+    "Google"
+  ],
+  "requiredAttributes": [],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Lowercase",
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OFF",
+  "autoVerifiedAttributes": [
+    "email",
+    "phone_number"
+  ],
+  "mfaTypes": []
+}

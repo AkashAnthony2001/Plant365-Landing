@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 277 151" width="150" height="70">
+  <g id="Canvas_1" stroke="none" fill-opacity="1" fill="none" stroke-opacity="1" stroke-dasharray="none">
+    <title>Meyi-Logo_</title>
+    <g id="Canvas_1_Trailer">
+      <title>Trailer</title>
+      <g id="Graphic_71">
+        <rect x="150" y="38" width="81.83" height="5.619999" fill="#fff"/>
+        <rect x="150" y="38" width="81.83" height="5.619999" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+    </g>
+    <g id="Canvas_1_MEYI">
+      <title>MEYI</title>
+      <g id="Graphic_2">
+        <text transform="translate(5 5)" fill="#fff">
+          <tspan font-family="Arial Black" font-size="100" fill="#fff" x="5.765625" y="110">Meyi</tspan>
+        </text>
+      </g>
+    </g>
+    <g id="Canvas_1_Truckface">
+      <title>Truckface</title>
+      <g id="Group_63">
+        <g id="Graphic_69">
+          <rect x="241.48328" y="43.585435" width="17.599997" height="9.98" fill="#fff"/>
+          <rect x="241.48328" y="43.585435" width="17.599997" height="9.98" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"/>
+        </g>
+        <g id="Graphic_68">
+          <ellipse cx="248.80268" cy="53.92576" rx="5.43750925111132" ry="6.03469193481012" fill="#fff"/>
+          <ellipse cx="248.80268" cy="53.92576" rx="5.43750925111132" ry="6.03469193481012" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        </g>
+        <g id="Group_64">
+          <g id="Graphic_67">
+            <rect x="240.3889" y="32.245435" width=".5979661" height="12.069365" fill="#fff"/>
+            <rect x="240.3889" y="32.245435" width=".5979661" height="12.069365" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+          <g id="Graphic_66">
+            <rect x="240.3889" y="32.245435" width="12.069365" height=".8933796" fill="#fff"/>
+            <rect x="240.3889" y="32.245435" width="12.069365" height=".8933796" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+          <g id="Graphic_65">
+            <path d="M 253.0727 32.40912 L 257.21647 43.744844 L 256.39086 44.046647 L 252.24708 32.710922 Z" fill="#fff"/>
+            <path d="M 253.0727 32.40912 L 257.21647 43.744844 L 256.39086 44.046647 L 252.24708 32.710922 Z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+          </g>
+        </g>
+      </g>
+      <g id="Graphic_88">
+        <rect x="138.5" y="49" width="93.33" height="5.619999" fill="#fff"/>
+        <rect x="138.5" y="49" width="93.33" height="5.619999" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+    </g>
+  </g>
+</svg>

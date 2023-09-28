@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg width="280" height="152" version="1.1" viewBox="-16 -2 280 152" xmlns="http://www.w3.org/2000/svg">
+<g fill="none">
+<title>Meyi-Logo_</title>
+<g>
+<title>Trailer</title>
+<rect x="150.47" y="38" width="81.83" height="5.62" fill="#fff"/>
+<rect x="150.47" y="38" width="81.83" height="5.62" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+</g>
+<g>
+<title>Truckface</title>
+<path d="m244.65 54.62c-0.55199-2.0555-0.09674-4.3731 1.3657-5.9962 2.1235-2.3567 5.5663-2.3567 7.6898 0 1.4625 1.6231 1.9177 3.9407 1.3657 5.9962h7.3932v-12.069h-21.611v12.069z" fill="#fff"/>
+<path d="m244.65 54.62c-0.55199-2.0555-0.09674-4.3731 1.3657-5.9962 2.1235-2.3567 5.5663-2.3567 7.6898 0 1.4625 1.6231 1.9177 3.9407 1.3657 5.9962h7.3932v-12.069h-21.611v12.069z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+<rect x="241.79" y="31.551" width=".59797" height="12.069" fill="#fff"/>
+<rect x="241.79" y="31.551" width=".59797" height="12.069" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+<rect x="241.79" y="31.551" width="12.069" height=".89338" fill="#fff"/>
+<rect x="241.79" y="31.551" width="12.069" height=".89338" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+<path d="m254.47 31.714 4.1438 11.336-0.82561 0.3018-4.1438-11.336z" fill="#fff"/>
+<path d="m254.47 31.714 4.1438 11.336-0.82561 0.3018-4.1438-11.336z" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+<rect x="239.8" y="61" width="20.5" height="51.5" fill="#fff"/>
+<rect x="239.8" y="61" width="20.5" height="51.5" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="138.97" y="49" width="93.33" height="5.62" fill="#fff"/>
+<rect x="138.97" y="49" width="93.33" height="5.62" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+</g>
+<g>
+<title>MEYI</title>
+<text transform="translate(-10.593 3.5)" fill="white">
+<tspan x="22.416016" y="110" fill="white" font-family="Arial Black" font-size="100">Mey</tspan>
+</text>
+</g>
+</g>
+</svg>

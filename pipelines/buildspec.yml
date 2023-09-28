@@ -1,0 +1,22 @@
+version: 0.2
+
+env:
+  variables:
+      NODE_ENV: $STAGE
+phases:
+  install:
+    commands:
+  pre_build:
+    commands:
+      - npm install --force
+  build:
+    commands:
+      - echo $STAGE
+      - export NODE_OPTIONS="--max-old-space-size=8192"
+      - export REACT_APP_BASE_URL=$APIDomainUrl
+      - export REACT_APP_STAGE=$STAGE && npm run build:$STAGE
+      - aws s3 sync --delete ./build/ s3://$SourceS3Bucket/www/ --cache-control "max-age=31536000,public,immutable"
+      - aws cloudfront create-invalidation --distribution-id $CloudFrontDistribution --paths "/*"
+cache:
+  paths:
+    - node_modules/**/*

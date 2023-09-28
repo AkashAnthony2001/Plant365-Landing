@@ -1,0 +1,510 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Resource template for integrating plant365 admin portal UI'
+Parameters:
+  ApplicationSuffix:
+    Type: String
+    Default: plant365-landing
+  Environment:
+    Type: String
+    Default: prod
+  KMSKey:
+    Type: String
+    Default: "arn:aws:kms:ap-south-1:607359138267:key/08b8931d-7538-4d5d-bc93-14f04912c162"
+  CodeCommitAccountID:
+    Type: String
+    Default: "137036865518"
+  CrossAccountRole:
+    Type: String
+    Default: "cross-account-role"
+  RepositoryBranch:
+    Description: The name of the branch for the CodeCommit repo
+    Type: String
+    Default: production
+    AllowedPattern: "[\\x20-\\x7E]*"
+    ConstraintDescription: Can contain only ASCII characters.
+  CodeCommitRepositoryName:
+    Type: String
+    Default: meyi-landing-page
+  CodeBuildSpecLocation:
+    Type: String
+    Default: pipelines/buildspec.yml
+  DomainName:
+    Type: String
+    Description: "The domain name of website"
+    Default: plant365.in
+  SourceS3Bucket:
+    Type: String
+    Description: "The domain name of website"
+    Default: supplier.dev.plant365.in
+  APIDOMAINURL:
+    Type: String
+    Description: "The domain name of website"
+    Default: https://api.plant365.in/public/
+  DirsToCreate:
+    Type: String
+    Description: "The domain name of website"
+    Default: www
+  AcmCertificateArn:
+    Type: String
+    Description: "The certificate arn for the domain name provided"
+    Default: arn:aws:acm:us-east-1:607359138267:certificate/c9e8705d-1250-438d-a97d-1753302422a9
+  IndexDocument:
+    Type: String
+    Description: "The index document"
+    Default: "index.html"
+  ErrorDocument:
+    Type: String
+    Description: "The error document, ignored in SPA mode"
+    Default: "index.html"
+  RewriteMode:
+    Type: String
+    Description: "The request rewrite behaviour type"
+    Default: "STATIC"
+    AllowedValues:
+      - STATIC
+      - SPA
+  DomainAlias:
+    Type: String
+    Default: ''
+  PipelineBucket:
+    Type: String
+    Default: ''
+Conditions:
+  IsStaticMode: !Equals [!Ref RewriteMode, "STATIC"]
+  IsSPAMode: !Equals [!Ref RewriteMode, "SPA"]
+    
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref SourceS3Bucket
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  S3CustomResource:
+    Type: Custom::S3CustomResource
+    Properties:
+      ServiceToken: !GetAtt AWSLambdaFunction.Arn
+      the_bucket: !Ref Bucket
+      dirs_to_create: !Ref DirsToCreate
+  AWSLambdaFunction:
+     Type: "AWS::Lambda::Function"
+     Properties:
+       Description: "Creating www folder with S3 Buckets!"
+       FunctionName: !Sub 'create-www-folder-${ApplicationSuffix}'
+       Handler: index.handler
+       Role: !GetAtt AWSLambdaExecutionRole.Arn
+       Timeout: 360
+       Runtime: python3.9
+       Code:
+         ZipFile: |
+          import boto3
+          import cfnresponse
+          def handler(event, context):
+              # Init ...
+              the_event = event['RequestType']
+              print("The event is: ", str(the_event))
+              response_data = {}
+              s_3 = boto3.client('s3')
+              # Retrieve parameters
+              the_bucket = event['ResourceProperties']['the_bucket']
+              dirs_to_create = event['ResourceProperties']['dirs_to_create']
+              try:
+                  if the_event in ('Create', 'Update'):
+                      print("Creating: ", str(dirs_to_create))
+                      s_3.put_object(Bucket=the_bucket,
+                                     Key=(dirs_to_create
+                                          + '/'))
+                  elif the_event == 'Delete':
+                      print("Deleting S3 content...")
+                      b_operator = boto3.resource('s3')
+                      b_operator.Bucket(str(the_bucket)).objects.all().delete()
+                  # Everything OK... send the signal back
+                  print("Operation successful!")
+                  cfnresponse.send(event,
+                                   context,
+                                   cfnresponse.SUCCESS,
+                                   response_data)
+              except Exception as e:
+                  print("Operation failed...")
+                  print(str(e))
+                  response_data['Data'] = str(e)
+                  cfnresponse.send(event,
+                                   context,
+                                   cfnresponse.FAILED,
+                                   response_data)
+  AWSLambdaExecutionRole:
+     Type: AWS::IAM::Role
+     Properties:
+       AssumeRolePolicyDocument:
+         Statement:
+         - Action:
+           - sts:AssumeRole
+           Effect: Allow
+           Principal:
+             Service:
+             - lambda.amazonaws.com
+         Version: '2012-10-17'
+       Path: "/"
+       Policies:
+       - PolicyDocument:
+           Statement:
+           - Action:
+             - logs:CreateLogGroup
+             - logs:CreateLogStream
+             - logs:PutLogEvents
+             Effect: Allow
+             Resource: arn:aws:logs:*:*:*
+           Version: '2012-10-17'
+         PolicyName: !Sub ${AWS::StackName}-AWSLambda-CW
+       - PolicyDocument:
+           Statement:
+           - Action:
+             - s3:PutObject
+             - s3:DeleteObject
+             - s3:List*
+             Effect: Allow
+             Resource:
+             - !Sub arn:aws:s3:::${Bucket}/*
+             - !Sub arn:aws:s3:::${Bucket}
+           Version: '2012-10-17'
+         PolicyName: !Sub ${AWS::StackName}-AWSLambda-S3
+       RoleName: !Sub ${AWS::StackName}-AWSLambdaExecutionRole
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref Bucket
+      PolicyDocument: 
+        Statement: 
+          - Effect: "Allow"
+            Action: "s3:GetObject"
+            Resource: !Sub "arn:aws:s3:::${Bucket}/*"
+            Principal: 
+              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${OriginAccessIdentity}'
+  OriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Ref AWS::StackName
+  
+  RewriteRequestStaticFunction:
+    Condition: IsStaticMode
+    Type: AWS::CloudFront::Function
+    Properties: 
+      Name: !Sub "${AWS::StackName}-req-static"
+      AutoPublish: true
+      FunctionCode: !Sub |
+        function handler(event) {
+          var request = event.request;
+          var uri = request.uri
+          if (uri.endsWith('/')) {
+              request.uri += '${IndexDocument}';
+          } else if (!uri.includes('.')) {
+              request.uri += '/${IndexDocument}';
+          }
+          return request;
+        }
+      FunctionConfig: 
+        Comment: !Sub "rewrite all paths to /${IndexDocument}"
+        Runtime: cloudfront-js-1.0
+  
+  RewriteRequestSpaFunction:
+    Condition: IsSPAMode
+    Type: AWS::CloudFront::Function
+    Properties: 
+      Name: !Sub "${AWS::StackName}-req-spa"
+      AutoPublish: true
+      FunctionCode: !Sub |
+        function handler(event) {
+          var request = event.request;
+          var uri = request.uri
+          if (uri.includes('.') && !uri.endsWith('.html')) {
+              return request;
+          }
+          request.uri = '/${IndexDocument}';
+          return request;
+        }
+      FunctionConfig: 
+        Comment: !Sub "rewrite sub-directory path with trailing /${IndexDocument}"
+        Runtime: cloudfront-js-1.0
+  
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    DependsOn: S3CustomResource
+    Properties:
+      DistributionConfig:
+        Enabled: 'true'
+        Comment: !Ref AWS::StackName
+        DefaultRootObject: !Ref IndexDocument
+        HttpVersion: http2
+        CustomErrorResponses:
+          - ErrorCachingMinTTL: 86400
+            ErrorCode: 403 # object not found in bucket
+            ResponseCode: !If [IsStaticMode, 404, 200]
+            ResponsePagePath: !If [IsStaticMode, !Sub "/${ErrorDocument}", !Sub "/${IndexDocument}"]
+        Origins:
+          - DomainName: !Sub "${Bucket}.s3.${AWS::Region}.amazonaws.com"
+            Id: bucketOrigin
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${OriginAccessIdentity}
+            OriginPath: !Sub "/${DirsToCreate}"
+        Aliases:
+          - !Ref DomainAlias
+        ViewerCertificate:
+          AcmCertificateArn: !Ref AcmCertificateArn
+          SslSupportMethod: sni-only
+        DefaultCacheBehavior:
+          Compress: 'true'
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          TargetOriginId: bucketOrigin
+          ForwardedValues:
+            QueryString: 'false'
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !If [IsStaticMode, !GetAtt RewriteRequestStaticFunction.FunctionMetadata.FunctionARN, !GetAtt RewriteRequestSpaFunction.FunctionMetadata.FunctionARN]        
+        
+  
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Action: 
+            - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: 
+              - codebuild.amazonaws.com
+      Path: /
+      Policies:
+        - PolicyName: !Join ['-', [!Ref Environment,!Ref ApplicationSuffix, 'codebuild-policy']]
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - logs:*
+                - s3:*
+                - cloudfront:*
+                - iam:*
+                - cloudwatch:*
+                - logs:*
+                - codecommit:PostCommentForPullRequest
+                - codecommit:UpdatePullRequestApprovalState
+                Effect: Allow
+                Resource: '*'
+        - PolicyName: !Join ['-', [!Ref Environment,!Ref ApplicationSuffix, 'codebuild-s3-policy']]
+          PolicyDocument: 
+            Version: 2012-10-17
+            Statement: 
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:PutObject
+                Resource:
+                  - !Sub arn:${AWS::Partition}:s3:::${PipelineBucket}
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement: 
+          - Effect: Allow
+            Principal: 
+              Service: [codepipeline.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      Policies:
+        - PolicyName: !Join ['-', [!Ref Environment,!Ref ApplicationSuffix, 'codecommit-access']]
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'codecommit:CancelUploadArchive'
+                  - 'codecommit:GetBranch'
+                  - 'codecommit:GetCommit'
+                  - 'codecommit:GetUploadArchiveStatus'
+                  - 'codecommit:UploadArchive'
+                Resource:
+                  - !Sub "arn:${AWS::Partition}:codecommit:${AWS::Region}:${CodeCommitAccountID}:${CodeCommitRepositoryName}"
+        - PolicyName: CrossAccountCodeCommitAssumeRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "sts:AssumeRole"
+                Resource: !Sub "arn:aws:iam::${CodeCommitAccountID}:role/${CrossAccountRole}"
+        - PolicyName: CanAccessS3
+          PolicyDocument: 
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:GetBucketVersioning
+                  - s3:PutObject
+                  - s3:GetBucketPolicy
+                  - s3:GetObjectAcl
+                  - s3:PutObjectAcl
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub arn:${AWS::Partition}:s3:::${PipelineBucket}
+                  - !Sub arn:${AWS::Partition}:s3:::${PipelineBucket}/*
+              - Effect: Allow
+                Action:
+                  - codebuild:BatchGetBuilds
+                  - codebuild:StartBuild
+                Resource:
+                  - !GetAtt CodeBuildProject.Arn
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${Environment}-${ApplicationSuffix}-codebuild
+      Description: !Join [' ', ["Build ",!Ref Environment,!Ref ApplicationSuffix, ' Application']]
+      ServiceRole:
+        Fn::GetAtt:
+        - CodeBuildRole
+        - Arn
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_MEDIUM
+        Image: "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
+        EnvironmentVariables:
+            - Name: CloudFrontDistribution
+              Value: !Ref Distribution
+              Type: PLAINTEXT
+            - Name: STAGE
+              Value: !Ref Environment
+              Type: PLAINTEXT
+            - Name: SourceS3Bucket
+              Value: !Ref SourceS3Bucket
+              Type: PLAINTEXT
+            - Name: APIDomainUrl
+              Value: !Ref APIDOMAINURL
+              Type: PLAINTEXT
+      Source:
+        BuildSpec: !Ref CodeBuildSpecLocation
+        Location: !Sub https://git-codecommit.${AWS::Region}.amazonaws.com/v1/repos/${CodeCommitRepositoryName}
+        Type: CODECOMMIT
+      TimeoutInMinutes: 10 
+      Tags:
+        - Key: Project
+          Value: plant365   
+  # PipelineBucket:
+  #   Type: AWS::S3::Bucket
+  #   DeletionPolicy: Delete
+  #   UpdateReplacePolicy: Delete
+  #   Properties:
+  #     BucketName: !Ref DeployBucket
+  PipelineBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref PipelineBucket
+      PolicyDocument:
+        Statement:
+          - Effect: "Deny"
+            Action: "s3:*"
+            Principal: "*"
+            Resource:
+              - !Sub arn:${AWS::Partition}:s3:::${PipelineBucket}
+              - !Sub arn:${AWS::Partition}:s3:::${PipelineBucket}/*
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+          - Action:
+              - s3:*
+            Effect: Allow
+            Resource:
+              - !Sub "arn:${AWS::Partition}:s3:::${PipelineBucket}"
+              - !Sub "arn:${AWS::Partition}:s3:::${PipelineBucket}/*"
+            Principal:
+              AWS:
+                - !GetAtt CodePipelineRole.Arn
+          - Sid: AllowedtoRole
+            Effect: Allow
+            Principal:
+              AWS:
+              - !Sub "arn:aws:iam::${CodeCommitAccountID}:role/${CrossAccountRole}"
+            Action:
+              - s3:*
+            Resource:
+              - !Sub "arn:${AWS::Partition}:s3:::${PipelineBucket}"
+              - !Sub "arn:${AWS::Partition}:s3:::${PipelineBucket}/*"
+          
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub ${Environment}-${ApplicationSuffix}-pipeline
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      Stages:
+      - Name: Source
+        Actions:
+        - InputArtifacts: []
+          Name: Source
+          ActionTypeId:
+            Category: Source
+            Owner: AWS
+            Version: '1'
+            Provider: CodeCommit
+          OutputArtifacts:
+          - Name: MyApp
+          Configuration:
+            BranchName:
+              Ref: RepositoryBranch
+            RepositoryName:
+              Ref: CodeCommitRepositoryName
+            PollForSourceChanges: true
+          RunOrder: 1
+          RoleArn: !Sub "arn:aws:iam::${CodeCommitAccountID}:role/${CrossAccountRole}"
+      - Name: Build
+        Actions:
+        - InputArtifacts:
+          - Name: MyApp
+          Name: CodeBuildProject
+          ActionTypeId:
+            Category: Test
+            Owner: AWS
+            Version: '1'
+            Provider: CodeBuild
+          OutputArtifacts: []
+          Configuration:
+            ProjectName:
+              Ref: CodeBuildProject
+          RunOrder: 1
+      ArtifactStore:
+        Type: S3
+        Location: !Ref PipelineBucket
+        EncryptionKey: 
+          Id: !Ref KMSKey
+          Type: KMS
+Outputs:
+  PipelineUrl:
+    Value: !Sub https://console.aws.amazon.com/codepipeline/home?region=${AWS::Region}#/view/${Pipeline}
+    Description: CodePipeline URL
+  BucketName:
+    Description: "The S3 bucket name where HTML files need to be uploaded"
+    Value: !Ref Bucket
+  CloudFrontDistribution:
+    Description: "The CloudFront distribution in front of the S3 bucket"
+    Value: !Ref Distribution
+  WebsiteUrl:
+    Description: "The website URL"
+    Value: !Sub "https://${DomainName}/"
