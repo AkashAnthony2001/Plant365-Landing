@@ -269,7 +269,11 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
 
   const handleVerify = (code) => {
     if(localStorage.getItem('otp') === code){
-      console.log('Super');
+    handleNextandPreviousButtons("next")
+
+    }
+    else{
+      alert('Wrong Otp')
     }
   }
   const handleQuoteSubmit = async () => {
@@ -343,26 +347,18 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   {
     console.log(currentOrderPage);
   }
-  function hideCenter8Digits(mobileNumber) {
-    if (mobileNumber && mobileNumber.length >= 10) {
-      let visiblePart = "";
-      let hiddenPart = "";
-
-      if (mobileNumber[0] === "+") {
-        const countryCode = mobileNumber.substring(0, mobileNumber.length - 10);
-        visiblePart += countryCode;
-        hiddenPart = "*".repeat(2);
-      }
-
-      const middleDigits = mobileNumber.substring(
-        visiblePart.length,
-        mobileNumber.length - 2
-      );
-
-      return visiblePart + middleDigits + hiddenPart + mobileNumber.slice(-2);
+  function hideCenterDigits(inputNumber) {
+    if (inputNumber.length !== 12) {
+      return "Invalid input";
     }
-    return mobileNumber;
+
+    const firstPart = inputNumber.slice(0, 3);
+    const hidePart = "******";
+    const lastPart = inputNumber.slice(9);
+
+    return firstPart + hidePart + lastPart;
   }
+  
   return (
     <div
       className="page-section bg-light page-content top-header"
@@ -370,9 +366,9 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
     >
       <div className="order-flow">
         <div>
-          <div className={`error-container ${showError ? "" : "disable"}`}>
+          {/* <div className={`error-container ${showError ? "" : "disable"}`}>
             {errorMessage}
-          </div>
+          </div> */}
 
           <div className={`success-container ${showSuccess ? "" : "disable"}`}>
             Request quote added successfully
@@ -383,7 +379,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
               <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[60vh]">
                 <div className="card">
                   <img
-                    className="card-img-top tw-h-[400px] tw-w-[500px]"
+                    className="card-img-top tw-h-[350px] tw-w-[450px]"
                     src={product.img}
                     alt="Card image cap"
                   />
@@ -964,10 +960,9 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                             fontWeight: "bold",
                           }}
                         >
-                          {hideCenter8Digits(
-                            (user.attributes && user.attributes.phone_number) ||
-                              ""
-                          )}
+          {hideCenterDigits(mobileNumber)}
+                              
+                          
                         </p>
                       </div>
                     </div>
@@ -1003,7 +998,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         onVerify={handleVerify}
-        handleNextandPreviousButtons={handleNextandPreviousButtons}
+        mobileNumber={mobileNumber}
       />
     </div>
   );
