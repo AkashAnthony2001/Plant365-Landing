@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/bootstrap.css";
 import VerifyDialog from "./VerifyDialog";
-// import VerifyDialog from "./Otpverification";
 const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   const location = useLocation();
   const { product, supplierDetails } = location.state;
@@ -23,7 +22,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   const pincodeRegExp = /^[0-9]{6}$/;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userComments, setUserComments] = useState("");
-  
+
   const [googleCords, setGoogleCords] = useState({
     mapPosition: {
       lat: 18.5204,
@@ -81,7 +80,6 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   ];
   const weekday = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const productSpec = product.Spec || product.spec;
-
 
   useEffect(async () => {
     getDateRange();
@@ -151,7 +149,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
 
   const getDateRange = () => {
     const dateArray = [];
-    let startDate = new Date(new Date().setDate(new Date().getDate()));
+    let startDate = new Date(new Date().setDate(new Date().getDate() ));
     let endDate = new Date(new Date().setDate(startDate.getDate() + 10));
     while (startDate < endDate) {
       dateArray.push(new Date(startDate));
@@ -208,9 +206,9 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   };
   const handleNextandPreviousButtons = (handler) => {
     let counter = orderFlow.indexOf(currentOrderPage);
-    if(currentOrderPage === 'Select Grade' && handler==='popup'){
-      localStorage.setItem('otp',Math.floor(100000 + Math.random() * 900000))
-      setIsDialogOpen(true)
+    if (currentOrderPage === "Select Grade" && handler === "popup") {
+      localStorage.setItem("otp", Math.floor(100000 + Math.random() * 900000));
+      setIsDialogOpen(true);
     }
     if (currentOrderPage === "Select Grade" && handler === "next") {
       if (selectedGrade === null) {
@@ -268,14 +266,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   };
 
   const handleVerify = (code) => {
-    if(localStorage.getItem('otp') === code){
-    handleNextandPreviousButtons("next")
-
+    if (localStorage.getItem("otp") === code) {
+      handleNextandPreviousButtons("next");
+    } else {
+      alert("Wrong Otp");
     }
-    else{
-      alert('Wrong Otp')
-    }
-  }
+  };
   const handleQuoteSubmit = async () => {
     const { id, Name, productName, shardId, publicId, img } = product;
     const companyNameProp = "custom:company";
@@ -358,7 +354,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
 
     return firstPart + hidePart + lastPart;
   }
-  
+
   return (
     <div
       className="page-section bg-light page-content top-header"
@@ -376,29 +372,32 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
 
           {currentOrderPage === "Select Grade" && (
             <div className="tw-container tw-mx-auto tw-px-4">
-              <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[60vh]">
-                <div className="card">
-                  <img
-                    className="card-img-top tw-h-[350px] tw-w-[450px]"
-                    src={product.img}
-                    alt="Card image cap"
-                  />
-                  <div className="card-body">
-                    <h4
-                      className="card-title tw-text-center tw-font-serif"
-                      style={{
-                        color: "#000",
-                        fontFamily: "PT Serif",
-                        fontSize: "24px",
-                        fontStyle: "normal",
-                        fontWeight: 400,
-                        lineHeight: "normal",
-                      }}
-                    >
-                      {product.Name}
-                    </h4>
+              <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[70vh] tw-flex-col md:tw-flex-row">
+                <div className="tw-flex tw-flex-col md:tw-flex-row">
+                  <div className="card">
+                    <img
+                      className="card-img-top sm:tw-w-[250px] sm:tw-h-[300px] md:tw-h-[350px] md:tw-w-[450px]"
+                      src={product.img}
+                      alt="Card image cap"
+                    />
+                    <div className="card-body">
+                      <h4
+                        className="card-title tw-text-center sm:text-lg md:text-xl"
+                        style={{
+                          color: "#000",
+                          fontFamily: "PT Serif",
+                          fontSize: "24px",
+                          fontStyle: "normal",
+                          fontWeight: 400,
+                          lineHeight: "normal",
+                        }}
+                      >
+                        {product.Name}
+                      </h4>
+                    </div>
                   </div>
                 </div>
+
                 <div className="flex flex-col">
                   <div>
                     <h1
@@ -446,7 +445,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                     Grades
                   </h1>
                   <div className="row">
-                    <div className="tw-grid tw-grid-cols-10">
+                    <div className="tw-grid tw-grid-cols-8">
                       {product &&
                         Array.isArray(productSpec) &&
                         productSpec.map((grade) => (
@@ -464,6 +463,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                                     : "#ececec",
 
                                 color: "#000000AB",
+                                margin: "18px",
                               }}
                               onClick={() => handleGradeSelection(grade)}
                             >
@@ -960,9 +960,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                             fontWeight: "bold",
                           }}
                         >
-          {hideCenterDigits(mobileNumber)}
-                              
-                          
+                          {hideCenterDigits(mobileNumber)}
                         </p>
                       </div>
                     </div>
@@ -974,7 +972,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
         </div>
       </div>
       <div className="container mt-3">
-        <div className="float-right">
+        <div className="float-right ">
           <button
             className="btn btn-primary m-1"
             style={{
@@ -984,16 +982,31 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
           >
             Previous
           </button>
-          <button
-            className="btn btn-primary m-1"
-            onClick={ (mobileNumber.length && quantity.length && selectedGrade) &&  currentOrderPage==="Select Grade"?()=>handleNextandPreviousButtons("popup"): () => handleNextandPreviousButtons("next")}
-          >
-            {currentOrderPage === "Request Quote"
-              ? "Continue Shopping"
-              : "Next"}
-          </button>
+        </div>
+
+        <div className="clearfix"></div>
+
+        <div className="float-right">
+          <div className="next-quantity-wrapper">
+            <button
+              className="btn btn-primary m-1"
+              onClick={
+                mobileNumber.length &&
+                quantity.length &&
+                selectedGrade &&
+                currentOrderPage === "Select Grade"
+                  ? () => handleNextandPreviousButtons("popup")
+                  : () => handleNextandPreviousButtons("next")
+              }
+            >
+              {currentOrderPage === "Request Quote"
+                ? "Continue Shopping"
+                : "Next"}
+            </button>
+          </div>
         </div>
       </div>
+
       <VerifyDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}

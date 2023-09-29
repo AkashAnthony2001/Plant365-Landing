@@ -50,3 +50,16 @@
   .resend-link{
     color:#44b63b;
   }
+  @media screen and (max-width: 768px) {
+    .verify-dialog-content {
+      padding: 40px 10px;
+    }
+  
+    .otp-input {
+      width: 40px;
+    }
+  
+    .verify-button {
+      padding: 10px 20px;
+    }
+  }

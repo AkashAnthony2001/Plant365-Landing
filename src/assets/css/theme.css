@@ -2868,3 +2868,60 @@ label {
     width: 160px;
   }
 }
+/* @media screen and (max-width: 768px) {
+  .card-title {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .grade .tw-grid {
+    flex-wrap: wrap;
+  }
+
+  .grade .tw-grid .grade {
+    width: 100%; 
+  }
+
+  .grade button {
+    width: auto; 
+    padding: 8px 12px; 
+    font-size: 14px;
+  }
+
+}
+
+@media screen and (max-width: 480px) {
+  .card-title {
+    font-size: 18px;
+    line-height: 1.1;
+  }
+
+  .grade .tw-grid {
+    flex-wrap: wrap;
+  }
+
+  .grade .tw-grid .grade {
+    width: 100%;
+  }
+
+  .grade button {
+    width: auto; 
+    padding: 6px 10px; 
+    font-size: 12px;
+  }
+
+}
+
+@media screen and (max-width: 360px) {
+  .card-title {
+    font-size: 16px;
+    line-height: 1.0;
+  }
+
+  .grade button {
+    width: auto; 
+    padding: 4px 8px; 
+    font-size: 10px;
+  }
+
+} */
