@@ -55,6 +55,18 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   const navigate = useNavigate();
   const [mobileNumber, setMobileNumber] = useState("");
   const [isMobileValid, setIsMobileValid] = useState(true);
+  const [selectedDateIndex, setSelectedDateIndex] = useState(0);
+  const goToNextDate = () => {
+    if (selectedDateIndex < dateRange.length - 1) {
+      setSelectedDateIndex(selectedDateIndex + 1);
+    }
+  };
+
+  const goToPreviousDate = () => {
+    if (selectedDateIndex > 0) {
+      setSelectedDateIndex(selectedDateIndex - 1);
+    }
+  };
 
   const [orderFlow, setOrderFlow] = useState([
     "Select Grade",
@@ -149,14 +161,17 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
 
   const getDateRange = () => {
     const dateArray = [];
-    let startDate = new Date(new Date().setDate(new Date().getDate() ));
-    let endDate = new Date(new Date().setDate(startDate.getDate() + 10));
+    let startDate = new Date(new Date().setDate(new Date().getDate()));
+    let endDate = new Date(new Date().setDate(startDate.getDate() + 8));
     while (startDate < endDate) {
       dateArray.push(new Date(startDate));
       startDate.setDate(startDate.getDate() + 1);
     }
     setDateRange(dateArray);
     setScheduleDate(dateArray[0]);
+  };
+  const handleDateSelection = (date) => {
+    setSelectedDateIndex(dateRange.indexOf(date));
   };
   const validateMobileNumber = (phone) => {
     const phoneRegex = /^[0-9]{12}$/;
@@ -371,7 +386,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
           </div>
 
           {currentOrderPage === "Select Grade" && (
-            <div className="tw-container tw-mx-auto tw-px-4">
+            <div className="tw-container tw-mx-auto tw-px-4 tw-mt-10 md:tw-mt-0 tw-mb-[-10px]">
               <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[70vh] tw-flex-col md:tw-flex-row">
                 <div className="tw-flex tw-flex-col md:tw-flex-row">
                   <div className="card">
@@ -533,26 +548,34 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
             <>
               <div className="container">
                 <div className="row schedule">
-                  <h1
-                    className="request-header"
-                    style={{
-                      fontFamily: "serif",
-                      color: "black",
-                      fontWeight: "bold",
-                      fontSize: "24px",
-                    }}
-                  >
+                  <h1 style={{
+                    fontFamily: "serif",
+                    color: "black",
+                    fontWeight: "bold",
+                    fontSize: "24px",
+                  }}>
                     Schedule Date
                   </h1>
-                  <div className="btn btn-group schedule-date">
+                  <div className="btn btn-group schedule-date flex justify-between items-center">
+                    <button
+                      style={{
+                        width: "55px",
+                        height: "80px",
+                        fontSize: "54px",
+                        color: "#27B643",
+                      }}
+                      onClick={goToPreviousDate}
+                    >
+                      &lt;
+                    </button>
                     {dateRange.length > 0 &&
-                      dateRange.map((date) => (
+                      dateRange.map((date, index) => (
                         <button
                           key={date.getDate()}
                           className={`btn btn-outline-primary ${
-                            scheduleDate === date ? "activeDate" : ""
+                            selectedDateIndex === index ? "activeDate" : ""
                           } m-1`}
-                          onClick={() => setScheduleDate(date)}
+                          onClick={() => handleDateSelection(date)}
                         >
                           {weekday[date.getDay()]}
                           <br />
@@ -561,8 +584,20 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                           {months[date.getMonth()]}
                         </button>
                       ))}
+                    <button
+                      style={{
+                        width: "55px",
+                        height: "80px",
+                        fontSize: "54px",
+                        color: "#27B643",
+                      }}
+                      onClick={goToNextDate}
+                    >
+                      &gt;
+                    </button>
                   </div>
                 </div>
+
                 <br />
                 <h1
                   className="request-header"
@@ -973,36 +1008,38 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
       </div>
       <div className="container mt-3">
         <div className="float-right ">
-          <button
-            className="btn btn-primary m-1"
-            style={{
-              display: currentOrderPage === "Address" ? "inline" : "none",
-            }}
-            onClick={() => handleNextandPreviousButtons("previous")}
-          >
-            Previous
-          </button>
+          <div style={{ marginTop: "120px" }}>
+            <button
+              className="btn btn-primary m-1"
+              style={{
+                display: currentOrderPage === "Address" ? "inline" : "none",
+              }}
+              onClick={() => handleNextandPreviousButtons("previous")}
+            >
+              Previous
+            </button>
+          </div>
         </div>
-
-        <div className="clearfix"></div>
 
         <div className="float-right">
           <div className="next-quantity-wrapper">
-            <button
-              className="btn btn-primary m-1"
-              onClick={
-                mobileNumber.length &&
-                quantity.length &&
-                selectedGrade &&
-                currentOrderPage === "Select Grade"
-                  ? () => handleNextandPreviousButtons("popup")
-                  : () => handleNextandPreviousButtons("next")
-              }
-            >
-              {currentOrderPage === "Request Quote"
-                ? "Continue Shopping"
-                : "Next"}
-            </button>
+            <div style={{ marginTop: "120px" }}>
+              <button
+                className="btn btn-primary m-1 "
+                onClick={
+                  mobileNumber.length &&
+                  quantity.length &&
+                  selectedGrade &&
+                  currentOrderPage === "Select Grade"
+                    ? () => handleNextandPreviousButtons("popup")
+                    : () => handleNextandPreviousButtons("next")
+                }
+              >
+                {currentOrderPage === "Request Quote"
+                  ? "Continue Shopping"
+                  : "Next"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
