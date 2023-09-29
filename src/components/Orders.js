@@ -386,8 +386,8 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
           </div>
 
           {currentOrderPage === "Select Grade" && (
-            <div className="tw-container tw-mx-auto tw-px-4 tw-mt-10 md:tw-mt-0 tw-mb-[-10px]">
-              <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[70vh] tw-flex-col md:tw-flex-row">
+            <div className="tw-container tw-mx-auto tw-px-4 tw-mt-10 md:tw-mt-0 tw-mb-[-10px] " style={{ marginTop: "2px" }}>
+              <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[70vh] tw-flex-col md:tw-flex-row ">
                 <div className="tw-flex tw-flex-col md:tw-flex-row">
                   <div className="card">
                     <img
@@ -413,7 +413,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                   </div>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col ">
                   <div>
                     <h1
                       style={{
@@ -1007,7 +1007,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
         </div>
       </div>
       <div className="container mt-3">
-        <div className="float-right ">
+        <div className="float-left ">
           <div style={{ marginTop: "120px" }}>
             <button
               className="btn btn-primary m-1"

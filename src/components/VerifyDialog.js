@@ -15,6 +15,7 @@ const VerifyDialog = ({ isOpen, onClose, onVerify, mobileNumber }) => {
   }
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [error, setError] = useState(""); 
 
   const handleOtpChange = (index, value) => {
     if (!isNaN(value) && value.length <= 1) {
@@ -29,14 +30,22 @@ const VerifyDialog = ({ isOpen, onClose, onVerify, mobileNumber }) => {
   };
 
   const handleVerify = () => {
-    const otpValue = otp && otp.join("");
-    onVerify(otpValue);
-    handleReset();
-    onClose();
+    const otpValue = otp.join("");
+    if (otpValue.length !== 6) {
+      setError("Please enter a 6-digit OTP.");
+    } else if (otpValue !== localStorage.getItem("otp")) {
+      setError("Your OTP is incorrect.");
+    } else {
+      setError(""); 
+      onVerify(otpValue);
+      handleReset();
+      onClose();
+    }
   };
-
+  
   const handleReset = () => {
     setOtp(["", "", "", "", "", ""]);
+    setError(""); 
   };
 
   return isOpen ? (
@@ -57,7 +66,7 @@ const VerifyDialog = ({ isOpen, onClose, onVerify, mobileNumber }) => {
           style={{
             fontFamily: "serif",
             color: "#7C8691",
-            fontSize: "22px",
+            fontSize: "18px",
             paddingBottom: "20px",
           }}
         >
@@ -82,10 +91,11 @@ const VerifyDialog = ({ isOpen, onClose, onVerify, mobileNumber }) => {
           style={{
             fontFamily: "serif",
             color: "#7C8691",
-            fontSize: "22px",
+            fontSize: "18px",
             paddingTop: "20px",
           }}
         >
+          {error && <span className="error-message" style={{ color: "red" }}>{error}</span>} 
           Didn't receive the code?{" "}
           <a href="" className="resend-link">
             Resend
