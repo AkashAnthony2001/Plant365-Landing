@@ -56,17 +56,46 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [isMobileValid, setIsMobileValid] = useState(true);
   const [selectedDateIndex, setSelectedDateIndex] = useState(0);
-  const goToNextDate = () => {
-    if (selectedDateIndex < dateRange.length - 1) {
-      setSelectedDateIndex(selectedDateIndex + 1);
-    }
-  };
 
+  useEffect(() => {
+    loadDateRange();
+  }, []);
+
+  const loadDateRange = () => {
+    const dateArray = [];
+    let startDate = new Date();
+    
+    dateArray.push(new Date(startDate));
+    setDateRange(dateArray);
+  };
+  const goToNextDate = () => {
+    const newDateArray = [...dateRange];
+    let lastDate = new Date(dateRange[dateRange.length - 1]);
+    lastDate.setDate(lastDate.getDate() + 1);
+    newDateArray.push(new Date(lastDate));
+  
+    newDateArray.shift();
+  
+    setDateRange(newDateArray);
+    setSelectedDateIndex(selectedDateIndex + 1);
+  };
+  
   const goToPreviousDate = () => {
     if (selectedDateIndex > 0) {
+      const newDateArray = [...dateRange];
+      
+      newDateArray.pop();
+      
+      let firstDate = new Date(dateRange[0]);
+      firstDate.setDate(firstDate.getDate() - 1);
+      
+      newDateArray.unshift(new Date(firstDate));
+  
+      setDateRange(newDateArray);
       setSelectedDateIndex(selectedDateIndex - 1);
     }
   };
+  
 
   const [orderFlow, setOrderFlow] = useState([
     "Select Grade",
@@ -385,175 +414,209 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
             Request quote added successfully
           </div>
 
-          {currentOrderPage === "Select Grade" && (
-            <div className="tw-container tw-mx-auto tw-px-4 tw-mt-10 md:tw-mt-0 tw-mb-[-10px] " style={{ marginTop: "2px" }}>
-              <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[70vh] tw-flex-col md:tw-flex-row ">
-                <div className="tw-flex tw-flex-col md:tw-flex-row">
-                  <div className="card">
-                    <img
-                      className="card-img-top sm:tw-w-[250px] sm:tw-h-[300px] md:tw-h-[350px] md:tw-w-[450px]"
-                      src={product.img}
-                      alt="Card image cap"
-                    />
-                    <div className="card-body">
-                      <h4
-                        className="card-title tw-text-center sm:text-lg md:text-xl"
-                        style={{
-                          color: "#000",
-                          fontFamily: "PT Serif",
-                          fontSize: "24px",
-                          fontStyle: "normal",
-                          fontWeight: 400,
-                          lineHeight: "normal",
-                        }}
-                      >
-                        {product.Name}
-                      </h4>
-                    </div>
-                  </div>
-                </div>
+          <div className="container mt-2">
+  {currentOrderPage === "Select Grade" && (
+    <div style={{ marginBottom: "40px" }}>
+      <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[70vh] tw-flex-col md:tw-flex-row">
+        <div
+          style={{
+            padding: "5px 0px 32px 3px",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "25px",
+          }}
+          className="tw-flex tw-flex-col md:tw-flex-row"
+        >
+          <div
+            className="card"
+            style={{
+              width: "375px",
+              maxWidth: "375px",
+              border: "2px solid rgba(0, 0, 0, 0.07)",
+              boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.25)",
+              marginBottom: "20px",
+            }}
+          >
+            <img
+              className="card-img-top"
+              style={{
+                width: "100%",
+                height: "auto",
+              }}
+              src={product.img}
+              alt="Card image cap"
+            />
+            <div className="card-body">
+              <h4
+                className="card-title tw-text-center sm:text-lg md:text-xl"
+                style={{
+                  color: "#000",
+                  fontFamily: "PT Serif",
+                  fontSize: "24px",
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  lineHeight: "normal",
+                }}
+              >
+                {product.Name}
+              </h4>
+            </div>
+          </div>
+        </div>
 
-                <div className="flex flex-col ">
-                  <div>
-                    <h1
-                      style={{
-                        color: "#000",
-                        fontFamily: "PT Serif",
-                        fontSize: "24px",
-                        fontStyle: "normal",
-                        fontWeight: 400,
-                        lineHeight: "normal",
-                      }}
-                    >
-                      Mobile <span style={{ color: "#D31717" }}>*</span>
-                    </h1>
-                    <br />
-                    <div className="tw-max-w-xs">
-                      <PhoneInput
-                        country={"in"}
-                        inputStyle={{
-                          width: "100px",
-                          height: "24px",
-                          fontSize: "14px",
-                          borderColor: isMobileValid ? "grey" : "red",
-                        }}
-                        value={mobileNumber}
-                        onChange={(phone) => {
-                          setMobileNumber(phone);
-                          setIsMobileValid(true);
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <br />
-                  <h1
-                    className="request-header"
-                    style={{
-                      color: "#000",
-                      fontFamily: "PT Serif",
-                      fontSize: "24px",
-                      fontStyle: "normal",
-                      fontWeight: 400,
-                      lineHeight: "normal",
-                    }}
+        <div className="flex flex-col" style={{ marginBottom: "50px" }}>
+          <div>
+            <h1
+              style={{
+                color: "#000",
+                fontFamily: "PT Serif",
+                fontSize: "24px",
+                fontStyle: "normal",
+                fontWeight: 400,
+                lineHeight: "normal",
+              }}
+            >
+              Mobile <span style={{ color: "#D31717" }}>*</span>
+            </h1>
+            <br />
+            <div className="tw-max-w-xs">
+              <PhoneInput
+                country={"in"}
+                inputStyle={{
+                  width: "100%",
+                  height: "24px",
+                  fontSize: "14px",
+                  borderColor: isMobileValid ? "grey" : "red",
+                  placeholder: "Enter your phone number",
+                }}
+                value={mobileNumber}
+                onChange={(phone) => {
+                  setMobileNumber(phone);
+                  setIsMobileValid(true);
+                }}
+              />
+            </div>
+            {showError && (
+              <div style={{ color: "red" }}>{errorMessage}</div>
+            )}
+          </div>
+          <br />
+
+          <h1
+            className="request-header"
+            style={{
+              color: "#000",
+              fontFamily: "PT Serif",
+              fontSize: "24px",
+              fontStyle: "normal",
+              fontWeight: 400,
+              lineHeight: "normal",
+            }}
+          >
+            Grades
+          </h1>
+          <br />
+          <div className="row">
+            <div className="tw-grid tw-grid-cols-8">
+              {product &&
+                Array.isArray(productSpec) &&
+                productSpec.map((grade) => (
+                  <div
+                    className={`grade ${
+                      selectedGrade === grade ? "selected-button" : ""
+                    }`}
                   >
-                    Grades
-                  </h1>
-                  <div className="row">
-                    <div className="tw-grid tw-grid-cols-8">
-                      {product &&
-                        Array.isArray(productSpec) &&
-                        productSpec.map((grade) => (
-                          <div
-                            className={`grade ${
-                              selectedGrade === grade ? "selected-button" : ""
-                            }`}
-                          >
-                            <button
-                              className={`tw-w-16 tw-h-10 tw-m-2`}
-                              style={{
-                                backgroundColor:
-                                  selectedGrade === grade
-                                    ? "#27B643"
-                                    : "#ececec",
-
-                                color: "#000000AB",
-                                margin: "18px",
-                              }}
-                              onClick={() => handleGradeSelection(grade)}
-                            >
-                              {grade.Values}
-                            </button>
-                          </div>
-                        ))}
-                    </div>
+                    <button
+                      className={`tw-w-16 tw-h-10 tw-m-2`}
+                      style={{
+                        width: "150px",
+                        height: "40px",
+                        backgroundColor:
+                          selectedGrade === grade ? "#27B643" : "#ececec",
+                        color: selectedGrade === grade ? "white" : "",
+                        margin: "6px",
+                        marginBottom: "0px",
+                      }}
+                      onClick={() => handleGradeSelection(grade)}
+                    >
+                      {grade.Values}
+                    </button>
                   </div>
-                  {selectedGrade && (
-                    <div className="select-unit">
-                      <h1
-                        className="request-header"
-                        style={{
-                          color: "#000",
-                          fontFamily: "PT Serif",
-                          fontSize: "20px",
-                          fontStyle: "normal",
-                          fontWeight: 400,
-                          lineHeight: "normal",
-                        }}
-                      >
-                        Quantity
-                      </h1>
-                      <div className="quantity-input ">
-                        <input
-                          style={{
-                            color: "#000",
-                            fontFamily: "PT Serif",
-                            fontSize: "20px",
-                            fontStyle: "normal",
-                            fontWeight: 400,
-                            lineHeight: "normal",
-                            width: "180px",
-                            height: "30px",
-                            padding: "5px",
-                            borderRadius: ".5px",
-                            borderColor: "0.5px solid rgba(0, 0, 0, 0.34)",
-                            borderWidth: "1px",
-                            outline: "none",
-                          }}
-                          type="number"
-                          value={quantity}
-                          onChange={(e) => setQuantity(e.target.value)}
-                        />
-                        <h5
-                          className="ml-2"
-                          style={{
-                            color: "#000",
-                            fontFamily: "PT Serif",
-                            fontSize: "20px",
-                            fontStyle: "normal",
-                            fontWeight: 400,
-                            lineHeight: "normal",
-                          }}
-                        >
-                          {gradeUnit}
-                        </h5>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                ))}
+            </div>
+          </div>
+
+          {selectedGrade && (
+            <div className="select-unit">
+              <h1
+                className="request-header"
+                style={{
+                  color: "#000",
+                  fontFamily: "PT Serif",
+                  fontSize: "20px",
+                  fontStyle: "normal",
+                  fontWeight: 400,
+                  lineHeight: "normal",
+                }}
+              >
+                Quantity
+              </h1>
+              <div className="quantity-input ">
+                <input
+                  style={{
+                    color: "#000",
+                    fontFamily: "PT Serif",
+                    fontSize: "20px",
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    lineHeight: "normal",
+                    width: "180px",
+                    height: "40px",
+                    padding: "5px",
+                    borderRadius: ".5px",
+                    borderColor: "0.5px solid rgba(0, 0, 0, 0.34)",
+                    borderWidth: "1px",
+                    outline: "none",
+                  }}
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+                <h5
+                  className="ml-2"
+                  style={{
+                    color: "#000",
+                    fontFamily: "PT Serif",
+                    fontSize: "20px",
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    lineHeight: "normal",
+                  }}
+                >
+                  {gradeUnit}
+                </h5>
               </div>
             </div>
           )}
+        </div>
+      </div>
+    </div>
+  )}
+</div>
+
+
           {currentOrderPage === "Address" && (
             <>
               <div className="container">
                 <div className="row schedule">
-                  <h1 style={{
-                    fontFamily: "serif",
-                    color: "black",
-                    fontWeight: "bold",
-                    fontSize: "24px",
-                  }}>
+                  <h1
+                    style={{
+                      fontFamily: "serif",
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "24px",
+                    }}
+                  >
                     Schedule Date
                   </h1>
                   <div className="btn btn-group schedule-date flex justify-between items-center">
@@ -757,6 +820,9 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                       />
                     </div>
                   </div>
+                  {showError && (
+                    <div style={{ color: "red" }}>{errorMessage}</div>
+                  )}
                 </div>
               </div>
             </>
@@ -766,40 +832,44 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
               <h2
                 className="request-header"
                 style={{
-                  fontFamily: "serif",
                   color: "black",
-                  fontSize: "28px",
-                  fontWeight: "bold",
+                  fontFamily: "PT Serif",
+                  fontSize: "24px",
+                  fontStyle: "normal",
+                  fontWeight: 700,
+                  lineHeight: "130%",
                 }}
               >
                 Summary
               </h2>
               <h1
                 style={{
-                  color: "green",
+                  color: "#27B643",
                   textAlign: "center",
-                  fontWeight: "bold",
-                  fontFamily: "serif",
+                  fontFamily: "PT Serif",
                   fontSize: "28px",
-                  padding: "0px",
-                  margin: "0px",
+                  fontStyle: "normal",
+                  fontWeight: 700,
+                  lineHeight: "130%",
                 }}
               >
                 You have Successfully placed your order
               </h1>
               <div
-                className="row justify-content-center overflow-content mt-4 border rounded-3 p-2"
+                className="row  mt-4 border rounded-3 p-2"
                 style={{ padding: "0px", margin: "0" }}
               >
-                <div className="col-md-6 request-box border-right">
+                <div className="col-md-4 request-box border-right">
                   <div className="request-quote">
                     <h1
                       className="request-header"
                       style={{
-                        fontFamily: "serif",
                         color: "black",
-                        fontSize: "22px",
-                        fontWeight: "bold",
+                        fontFamily: "PT Serif",
+                        fontSize: "24px",
+                        fontStyle: "normal",
+                        fontWeight: 700,
+                        lineHeight: "130%",
                       }}
                     >
                       Product Details
@@ -809,15 +879,22 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         className="request-img"
                         src={product && product.img}
                         alt={product && (product.Name || product.productName)}
-                        style={{ width: "100px", height: "100px" }}
+                        style={{
+                          width: "300px",
+                          height: "230.645px",
+                          flexShrink: 0,
+                        }}
                       />
                     </div>
                     <div
+                      className="text-center"
                       style={{
-                        fontFamily: "serif",
-                        color: "black",
-                        fontSize: "22px",
-                        fontWeight: "bold",
+                        color: "rgba(0, 0, 0, 0.79)",
+                        fontFamily: "PT Serif",
+                        fontSize: "20px",
+                        fontStyle: "normal",
+                        fontWeight: 700,
+                        lineHeight: "130%",
                       }}
                     >
                       {product && product.Name}
@@ -826,9 +903,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                       <h1
                         className="request-header p-0"
                         style={{
-                          fontFamily: "serif",
-                          color: "black",
-                          fontWeight: "bold",
+                          color: "#000",
+                          fontFamily: "PT Serif",
+                          fontSize: "18px",
+                          fontStyle: "normal",
+                          fontWeight: 700,
+                          lineHeight: "130%",
                         }}
                       >
                         Grade
@@ -837,8 +917,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                       <p
                         className="text-secondary p-0 m-0"
                         style={{
-                          fontFamily: "serif",
-                          fontWeight: "bold",
+                          color: "rgba(0, 0, 0, 0.63)",
+                          fontFamily: "PT Serif",
+                          fontSize: "18px",
+                          fontStyle: "normal",
+                          fontWeight: 700,
+                          lineHeight: "130%",
                         }}
                       >
                         {selectedGrade.Values || selectedGrade}
@@ -848,9 +932,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                       <h1
                         className="request-header p-0"
                         style={{
-                          fontFamily: "serif",
-                          color: "black",
-                          fontWeight: "bold",
+                          color: "#000",
+                          fontFamily: "PT Serif",
+                          fontSize: "18px",
+                          fontStyle: "normal",
+                          fontWeight: 700,
+                          lineHeight: "130%",
                         }}
                       >
                         Quantity
@@ -858,8 +945,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                       <p
                         className="text-secondary p-0 m-0"
                         style={{
-                          fontFamily: "serif",
-                          fontWeight: "bold",
+                          color: "rgba(0, 0, 0, 0.63)",
+                          fontFamily: "PT Serif",
+                          fontSize: "18px",
+                          fontStyle: "normal",
+                          fontWeight: 700,
+                          lineHeight: "130%",
                         }}
                       >{`${quantity} ${gradeUnit || ""}`}</p>
                     </div>
@@ -867,17 +958,24 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                       <h1
                         className="request-header"
                         style={{
-                          fontFamily: "serif",
-                          color: "black",
-                          fontWeight: "bold",
+                          color: "#000",
+                          fontFamily: "PT Serif",
+                          fontSize: "18px",
+                          fontStyle: "normal",
+                          fontWeight: 700,
+                          lineHeight: "130%",
                         }}
                       >
                         Delivery Date
                       </h1>
                       <p
                         style={{
-                          fontFamily: "serif",
-                          fontWeight: "bold",
+                          color: "rgba(0, 0, 0, 0.63)",
+                          fontFamily: "PT Serif",
+                          fontSize: "20px",
+                          fontStyle: "normal",
+                          fontWeight: 700,
+                          lineHeight: "130%",
                         }}
                       >
                         {scheduleDate &&
@@ -891,16 +989,19 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                     </div>
                   </div>
                 </div>
+
                 {user && Object.keys(user).length > 0 && (
                   <div className="col-md-6 request-box ">
                     <div className="request-quote">
                       <h1
                         className="request-header"
                         style={{
-                          fontFamily: "serif",
                           color: "black",
-                          fontWeight: "bold",
-                          fontSize: "22px",
+                          fontFamily: "PT Serif",
+                          fontSize: "24px",
+                          fontStyle: "normal",
+                          fontWeight: 700,
+                          lineHeight: "130%",
                         }}
                       >
                         Customer Details
@@ -909,9 +1010,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         <h1
                           className="request-header p-0"
                           style={{
-                            fontFamily: "serif",
-                            color: "black",
-                            fontWeight: "bold",
+                            color: "#000",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 700,
+                            lineHeight: "130%",
                           }}
                         >
                           Name
@@ -920,8 +1024,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         <p
                           className="text-secondary p-0 m-0"
                           style={{
-                            fontFamily: "serif",
-                            fontWeight: "bold",
+                            color: "rgba(0, 0, 0, 0.63)",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 700,
+                            lineHeight: "130%",
                           }}
                         >
                           {(user.attributes && user.attributes.name) || ""}
@@ -931,9 +1039,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         <h1
                           className="request-header p-0"
                           style={{
-                            fontFamily: "serif",
-                            color: "black",
-                            fontWeight: "bold",
+                            color: "#000",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 700,
+                            lineHeight: "130%",
                           }}
                         >
                           Company
@@ -941,8 +1052,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         <p
                           className="text-secondary p-0 m-0"
                           style={{
-                            fontFamily: "serif",
-                            fontWeight: "bold",
+                            color: "rgba(0, 0, 0, 0.63)",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 700,
+                            lineHeight: "130%",
                           }}
                         >
                           {(user.attributes &&
@@ -954,9 +1069,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         <h1
                           className="request-header p-0"
                           style={{
-                            fontFamily: "serif",
-                            color: "black",
-                            fontWeight: "bold",
+                            color: "#000",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 700,
+                            lineHeight: "130%",
                           }}
                         >
                           Address
@@ -964,35 +1082,48 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         <p
                           className="text-secondary p-0 m-0"
                           style={{
-                            fontFamily: "serif",
-                            fontWeight: "bold",
+                            color: "rgba(0, 0, 0, 0.63)",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 700,
+                            lineHeight: "130%",
                           }}
                         >
                           <p>
                             {userAddress.primaryAddress}
                             {userAddress.secondoryAddress}
+                            {userAddress.city}
                           </p>
-                          <p>{userAddress.city}</p>
-                          <p>{`${userAddress.state}, ${userAddress.country}`}</p>
-                          <p>{`Pin Code: ${userAddress.pinCode}`}</p>
+                          <p>
+                            {`${userAddress.state}`},{" "}
+                            {`Pin Code: ${userAddress.pinCode}`}
+                          </p>
                         </p>
                       </div>
                       <div className="request-grade">
                         <h1
                           className="request-header p-0"
                           style={{
-                            fontFamily: "serif",
-                            color: "black",
-                            fontWeight: "bold",
+                            color: "#000",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 700,
+                            lineHeight: "130%",
                           }}
                         >
-                          Phone number
+                          Mobile
                         </h1>
                         <p
                           className="text-secondary p-0 m-0"
                           style={{
-                            fontFamily: "serif",
-                            fontWeight: "bold",
+                            color: "rgba(0, 0, 0, 0.63)",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 700,
+                            lineHeight: "130%",
                           }}
                         >
                           {hideCenterDigits(mobileNumber)}
@@ -1008,7 +1139,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
       </div>
       <div className="container mt-3">
         <div className="float-left ">
-          <div style={{ marginTop: "120px" }}>
+          <div>
             <button
               className="btn btn-primary m-1"
               style={{
@@ -1023,9 +1154,12 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
 
         <div className="float-right">
           <div className="next-quantity-wrapper">
-            <div style={{ marginTop: "120px" }}>
+            <div className="ml-auto">
               <button
-                className="btn btn-primary m-1 "
+                className="btn btn-primary m-1"
+                style={{
+                  flexGrow: 1,
+                }}
                 onClick={
                   mobileNumber.length &&
                   quantity.length &&
