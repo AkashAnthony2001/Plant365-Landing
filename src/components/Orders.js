@@ -64,7 +64,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   const loadDateRange = () => {
     const dateArray = [];
     let startDate = new Date();
-    
+
     dateArray.push(new Date(startDate));
     setDateRange(dateArray);
   };
@@ -73,29 +73,28 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
     let lastDate = new Date(dateRange[dateRange.length - 1]);
     lastDate.setDate(lastDate.getDate() + 1);
     newDateArray.push(new Date(lastDate));
-  
+
     newDateArray.shift();
-  
+
     setDateRange(newDateArray);
     setSelectedDateIndex(selectedDateIndex + 1);
   };
-  
+
   const goToPreviousDate = () => {
     if (selectedDateIndex > 0) {
       const newDateArray = [...dateRange];
-      
+
       newDateArray.pop();
-      
+
       let firstDate = new Date(dateRange[0]);
       firstDate.setDate(firstDate.getDate() - 1);
-      
+
       newDateArray.unshift(new Date(firstDate));
-  
+
       setDateRange(newDateArray);
       setSelectedDateIndex(selectedDateIndex - 1);
     }
   };
-  
 
   const [orderFlow, setOrderFlow] = useState([
     "Select Grade",
@@ -250,22 +249,39 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   };
   const handleNextandPreviousButtons = (handler) => {
     let counter = orderFlow.indexOf(currentOrderPage);
-    if (currentOrderPage === "Select Grade" && handler === "popup") {
-      localStorage.setItem("otp", Math.floor(100000 + Math.random() * 900000));
-      setIsDialogOpen(true);
+    if (
+      validateMobileNumber(mobileNumber) &&
+      selectedGrade !== null &&
+      quantity !== ""
+    ) {
+      if (currentOrderPage === "Select Grade" && handler === "popup") {
+        localStorage.setItem(
+          "otp",
+          Math.floor(100000 + Math.random() * 900000)
+        );
+        setIsDialogOpen(true);
+      }
     }
-    if (currentOrderPage === "Select Grade" && handler === "next") {
-      if (selectedGrade === null) {
+
+    if (currentOrderPage === "Select Grade") {
+      if (!validateMobileNumber(mobileNumber)) {
+        if (!mobileNumber.length) {
+          setErrorMessage("Enter Mobile Number");
+          setIsMobileValid(false);
+          setShowError(true);
+          return;
+        } else {
+          setErrorMessage("Invalid Mobile Number");
+          setIsMobileValid(false);
+          setShowError(true);
+          return;
+        }
+      } else if (selectedGrade === null) {
         setErrorMessage("Please select any Grade");
         setShowError(true);
         return;
       } else if (quantity === "" || Number(quantity) === 0) {
         setErrorMessage("Quantity must be greater than 0");
-        setShowError(true);
-        return;
-      } else if (!validateMobileNumber(mobileNumber)) {
-        setErrorMessage("Invalid Mobile Number");
-        setIsMobileValid(false);
         setShowError(true);
         return;
       }
@@ -406,204 +422,210 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
     >
       <div className="order-flow">
         <div>
-          {/* <div className={`error-container ${showError ? "" : "disable"}`}>
+          <div
+            className={`error-container w-25 ml-auto ${
+              showError ? "" : "disable"
+            }`}
+          >
             {errorMessage}
-          </div> */}
+          </div>
 
           <div className={`success-container ${showSuccess ? "" : "disable"}`}>
             Request quote added successfully
           </div>
 
           <div className="container mt-2">
-  {currentOrderPage === "Select Grade" && (
-    <div style={{ marginBottom: "40px" }}>
-      <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[70vh] tw-flex-col md:tw-flex-row">
-        <div
-          style={{
-            padding: "5px 0px 32px 3px",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "25px",
-          }}
-          className="tw-flex tw-flex-col md:tw-flex-row"
-        >
-          <div
-            className="card"
-            style={{
-              width: "375px",
-              maxWidth: "375px",
-              border: "2px solid rgba(0, 0, 0, 0.07)",
-              boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.25)",
-              marginBottom: "20px",
-            }}
-          >
-            <img
-              className="card-img-top"
-              style={{
-                width: "100%",
-                height: "auto",
-              }}
-              src={product.img}
-              alt="Card image cap"
-            />
-            <div className="card-body">
-              <h4
-                className="card-title tw-text-center sm:text-lg md:text-xl"
-                style={{
-                  color: "#000",
-                  fontFamily: "PT Serif",
-                  fontSize: "24px",
-                  fontStyle: "normal",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                }}
-              >
-                {product.Name}
-              </h4>
-            </div>
-          </div>
-        </div>
+            {currentOrderPage === "Select Grade" && (
+              <div style={{ marginBottom: "40px" }}>
+                <div className="tw-flex tw-justify-center tw-gap-28 tw-items-center tw-h-[70vh] tw-flex-col md:tw-flex-row">
+                  <div
+                    style={{
+                      padding: "5px 0px 32px 3px",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "25px",
+                    }}
+                    className="tw-flex tw-flex-col md:tw-flex-row"
+                  >
+                    <div
+                      className="card"
+                      style={{
+                        width: "375px",
+                        maxWidth: "375px",
+                        border: "2px solid rgba(0, 0, 0, 0.07)",
+                        boxShadow: "0px 4px 10px 0px rgba(0, 0, 0, 0.25)",
+                        marginBottom: "20px",
+                      }}
+                    >
+                      <img
+                        className="card-img-top"
+                        style={{
+                          width: "100%",
+                          height: "auto",
+                        }}
+                        src={product.img}
+                        alt="Card image cap"
+                      />
+                      <div className="card-body">
+                        <h4
+                          className="card-title tw-text-center sm:text-lg md:text-xl"
+                          style={{
+                            color: "#000",
+                            fontFamily: "PT Serif",
+                            fontSize: "24px",
+                            fontStyle: "normal",
+                            fontWeight: 400,
+                            lineHeight: "normal",
+                          }}
+                        >
+                          {product.Name}
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
 
-        <div className="flex flex-col" style={{ marginBottom: "50px" }}>
-          <div>
-            <h1
-              style={{
-                color: "#000",
-                fontFamily: "PT Serif",
-                fontSize: "24px",
-                fontStyle: "normal",
-                fontWeight: 400,
-                lineHeight: "normal",
-              }}
-            >
-              Mobile <span style={{ color: "#D31717" }}>*</span>
-            </h1>
-            <br />
-            <div className="tw-max-w-xs">
-              <PhoneInput
-                country={"in"}
-                inputStyle={{
-                  width: "100%",
-                  height: "24px",
-                  fontSize: "14px",
-                  borderColor: isMobileValid ? "grey" : "red",
-                  placeholder: "Enter your phone number",
-                }}
-                value={mobileNumber}
-                onChange={(phone) => {
-                  setMobileNumber(phone);
-                  setIsMobileValid(true);
-                }}
-              />
-            </div>
-            {showError && (
-              <div style={{ color: "red" }}>{errorMessage}</div>
+                  <div
+                    className="flex flex-col"
+                    style={{ marginBottom: "50px" }}
+                  >
+                    <div>
+                      <h1
+                        style={{
+                          color: "#000",
+                          fontFamily: "PT Serif",
+                          fontSize: "24px",
+                          fontStyle: "normal",
+                          fontWeight: 400,
+                          lineHeight: "normal",
+                        }}
+                      >
+                        Mobile <span style={{ color: "#D31717" }}>*</span>
+                      </h1>
+                      <br />
+                      <div className="tw-max-w-xs">
+                        <PhoneInput
+                          country={"in"}
+                          inputStyle={{
+                            width: "100%",
+                            height: "24px",
+                            fontSize: "14px",
+                            borderColor: isMobileValid ? "grey" : "red",
+                            placeholder: "Enter your phone number",
+                          }}
+                          value={mobileNumber}
+                          onChange={(phone) => {
+                            setMobileNumber(phone);
+                            setIsMobileValid(true);
+                          }}
+                        />
+                      </div>
+
+                    </div>
+                    <br />
+
+                    <h1
+                      className="request-header"
+                      style={{
+                        color: "#000",
+                        fontFamily: "PT Serif",
+                        fontSize: "24px",
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        lineHeight: "normal",
+                      }}
+                    >
+                      Grades
+                    </h1>
+                    <br />
+                    <div className="row">
+                      <div className="tw-grid tw-grid-cols-8">
+                        {product &&
+                          Array.isArray(productSpec) &&
+                          productSpec.map((grade) => (
+                            <div
+                              className={`grade ${
+                                selectedGrade === grade ? "selected-button" : ""
+                              }`}
+                            >
+                              <button
+                                className={`tw-w-16 tw-h-10 tw-m-2`}
+                                style={{
+                                  width: "150px",
+                                  height: "40px",
+                                  backgroundColor:
+                                    selectedGrade === grade
+                                      ? "#27B643"
+                                      : "#ececec",
+                                  color: selectedGrade === grade ? "white" : "",
+                                  margin: "6px",
+                                  marginBottom: "0px",
+                                }}
+                                onClick={() => handleGradeSelection(grade)}
+                              >
+                                {grade.Values}
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+
+                    {selectedGrade && (
+                      <div className="select-unit">
+                        <h1
+                          className="request-header"
+                          style={{
+                            color: "#000",
+                            fontFamily: "PT Serif",
+                            fontSize: "20px",
+                            fontStyle: "normal",
+                            fontWeight: 400,
+                            lineHeight: "normal",
+                          }}
+                        >
+                          Quantity
+                        </h1>
+                        <div className="quantity-input ">
+                          <input
+                            style={{
+                              color: "#000",
+                              fontFamily: "PT Serif",
+                              fontSize: "20px",
+                              fontStyle: "normal",
+                              fontWeight: 400,
+                              lineHeight: "normal",
+                              width: "180px",
+                              height: "40px",
+                              padding: "5px",
+                              borderRadius: ".5px",
+                              borderColor: "0.5px solid rgba(0, 0, 0, 0.34)",
+                              borderWidth: "1px",
+                              outline: "none",
+                            }}
+                            type="number"
+                            value={quantity}
+                            onChange={(e) => setQuantity(e.target.value)}
+                          />
+                          <h5
+                            className="ml-2"
+                            style={{
+                              color: "#000",
+                              fontFamily: "PT Serif",
+                              fontSize: "20px",
+                              fontStyle: "normal",
+                              fontWeight: 400,
+                              lineHeight: "normal",
+                            }}
+                          >
+                            {gradeUnit}
+                          </h5>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-          <br />
-
-          <h1
-            className="request-header"
-            style={{
-              color: "#000",
-              fontFamily: "PT Serif",
-              fontSize: "24px",
-              fontStyle: "normal",
-              fontWeight: 400,
-              lineHeight: "normal",
-            }}
-          >
-            Grades
-          </h1>
-          <br />
-          <div className="row">
-            <div className="tw-grid tw-grid-cols-8">
-              {product &&
-                Array.isArray(productSpec) &&
-                productSpec.map((grade) => (
-                  <div
-                    className={`grade ${
-                      selectedGrade === grade ? "selected-button" : ""
-                    }`}
-                  >
-                    <button
-                      className={`tw-w-16 tw-h-10 tw-m-2`}
-                      style={{
-                        width: "150px",
-                        height: "40px",
-                        backgroundColor:
-                          selectedGrade === grade ? "#27B643" : "#ececec",
-                        color: selectedGrade === grade ? "white" : "",
-                        margin: "6px",
-                        marginBottom: "0px",
-                      }}
-                      onClick={() => handleGradeSelection(grade)}
-                    >
-                      {grade.Values}
-                    </button>
-                  </div>
-                ))}
-            </div>
-          </div>
-
-          {selectedGrade && (
-            <div className="select-unit">
-              <h1
-                className="request-header"
-                style={{
-                  color: "#000",
-                  fontFamily: "PT Serif",
-                  fontSize: "20px",
-                  fontStyle: "normal",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                }}
-              >
-                Quantity
-              </h1>
-              <div className="quantity-input ">
-                <input
-                  style={{
-                    color: "#000",
-                    fontFamily: "PT Serif",
-                    fontSize: "20px",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "normal",
-                    width: "180px",
-                    height: "40px",
-                    padding: "5px",
-                    borderRadius: ".5px",
-                    borderColor: "0.5px solid rgba(0, 0, 0, 0.34)",
-                    borderWidth: "1px",
-                    outline: "none",
-                  }}
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-                <h5
-                  className="ml-2"
-                  style={{
-                    color: "#000",
-                    fontFamily: "PT Serif",
-                    fontSize: "20px",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    lineHeight: "normal",
-                  }}
-                >
-                  {gradeUnit}
-                </h5>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  )}
-</div>
-
 
           {currentOrderPage === "Address" && (
             <>
@@ -1161,9 +1183,6 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                   flexGrow: 1,
                 }}
                 onClick={
-                  mobileNumber.length &&
-                  quantity.length &&
-                  selectedGrade &&
                   currentOrderPage === "Select Grade"
                     ? () => handleNextandPreviousButtons("popup")
                     : () => handleNextandPreviousButtons("next")
