@@ -61,7 +61,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
       setSelectedDateIndex(selectedDateIndex + 1);
     }
   };
-
+  console.log(errorMessage);
   const goToPreviousDate = () => {
     if (selectedDateIndex > 0) {
       setSelectedDateIndex(selectedDateIndex - 1);
@@ -221,22 +221,39 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   };
   const handleNextandPreviousButtons = (handler) => {
     let counter = orderFlow.indexOf(currentOrderPage);
-    if (currentOrderPage === "Select Grade" && handler === "popup") {
-      localStorage.setItem("otp", Math.floor(100000 + Math.random() * 900000));
-      setIsDialogOpen(true);
+    if (
+      validateMobileNumber(mobileNumber) &&
+      selectedGrade !== null &&
+      quantity !== ""
+    ) {
+      if (currentOrderPage === "Select Grade" && handler === "popup") {
+        localStorage.setItem(
+          "otp",
+          Math.floor(100000 + Math.random() * 900000)
+        );
+        setIsDialogOpen(true);
+      }
     }
-    if (currentOrderPage === "Select Grade" && handler === "next") {
-      if (selectedGrade === null) {
+
+    if (currentOrderPage === "Select Grade") {
+      if (!validateMobileNumber(mobileNumber)) {
+        if (!mobileNumber.length) {
+          setErrorMessage("Enter Mobile Number");
+          setIsMobileValid(false);
+          setShowError(true);
+          return;
+        } else {
+          setErrorMessage("Invalid Mobile Number");
+          setIsMobileValid(false);
+          setShowError(true);
+          return;
+        }
+      } else if (selectedGrade === null) {
         setErrorMessage("Please select any Grade");
         setShowError(true);
         return;
       } else if (quantity === "" || Number(quantity) === 0) {
         setErrorMessage("Quantity must be greater than 0");
-        setShowError(true);
-        return;
-      } else if (!validateMobileNumber(mobileNumber)) {
-        setErrorMessage("Invalid Mobile Number");
-        setIsMobileValid(false);
         setShowError(true);
         return;
       }
@@ -377,9 +394,10 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
     >
       <div className="order-flow">
         <div>
-          {/* <div className={`error-container ${showError ? "" : "disable"}`}>
+          
+          <div className={`error-container w-25 ml-auto ${showError ? "" : "disable"}`}>
             {errorMessage}
-          </div> */}
+          </div>
 
           <div className={`success-container ${showSuccess ? "" : "disable"}`}>
             Request quote added successfully
@@ -538,6 +556,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                           {gradeUnit}
                         </h5>
                       </div>
+                     
                     </div>
                   )}
                 </div>
@@ -548,12 +567,14 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
             <>
               <div className="container">
                 <div className="row schedule">
-                  <h1 style={{
-                    fontFamily: "serif",
-                    color: "black",
-                    fontWeight: "bold",
-                    fontSize: "24px",
-                  }}>
+                  <h1
+                    style={{
+                      fontFamily: "serif",
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "24px",
+                    }}
+                  >
                     Schedule Date
                   </h1>
                   <div className="btn btn-group schedule-date flex justify-between items-center">
@@ -1027,9 +1048,6 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
               <button
                 className="btn btn-primary m-1 "
                 onClick={
-                  mobileNumber.length &&
-                  quantity.length &&
-                  selectedGrade &&
                   currentOrderPage === "Select Grade"
                     ? () => handleNextandPreviousButtons("popup")
                     : () => handleNextandPreviousButtons("next")
