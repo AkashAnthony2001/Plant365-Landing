@@ -58,7 +58,7 @@ function App() {
           <Route path="/suppliers" element={<Supplier />} />
           <Route path="/products" element={<Products />} />
           <Route
-            path="/order"
+            path="/order/:productName" 
             element={
               <Orders
                 showSignin={showSignin}
@@ -68,8 +68,9 @@ function App() {
                 user={user}
               />
             }
-          />
-          <Route path="/contactus" element={<Contact />} />
+          >
+            {/* <Route path="order/:id" element={<OrderProduct />}/>  */}
+            </Route>          <Route path="/contactus" element={<Contact />} />
           <Route
             path="/supplier/:website"
             element={

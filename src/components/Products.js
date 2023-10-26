@@ -18,11 +18,10 @@ const Products = ({ initiator }) => {
   return (
     <div className="page-section-contact bg-light page-content top-header">
       <div className="container">
-        <div className="text-center wow fadeInUp">
-          <h3 className="tw-text-heading tw-font-bold tw-text-primary tw-text-center tw-leading-none tw-mb-5">
+        <div className="fadeInUp tw-flex tw-justify-center">
+          <h3 className="tw-text-heading tw-font-bold tw-text-primary tw-text-center tw-leading-none tw-mb-5  tw-border-b-2 tw-border-spacing-y-0.5 tw-border-primary">
             Choose your Products
           </h3>
-          <div className="divider mx-auto"></div>
         </div>
         {initiator ? (
           <div className="row">
@@ -59,7 +58,7 @@ const Products = ({ initiator }) => {
                     <img src={product.img} alt="" />
                     <br />
                     <Link
-                      to="/order"
+                      to={`/order/${product.Name}`}
                       state={{ product }}
                       className="btn btn-outline-primary order-button mb-3"
                     >
@@ -70,7 +69,6 @@ const Products = ({ initiator }) => {
                     <h5 className="text-secondary product-head pb-2">
                       {product.Name}
                     </h5>
-                    <div className="divider"></div>
                     <p className="regular-text">{product.desc}</p>
                     <h5 className="text-secondary product-head pb-2">
                       Specifications

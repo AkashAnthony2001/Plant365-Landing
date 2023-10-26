@@ -84,9 +84,8 @@ const Website = ({ google, setShowSignin, isUserLogin }) => {
         <div className="container">
           {supplierDetails && supplierDetails.description && (
             <div className="row mt-4">
-              <div className="text-center wow fadeInUp">
-                <h2 className="title-section">About us</h2>
-                <div className="divider mx-auto"></div>
+              <div className="tw-flex tw-justify-center fadeInUp">
+                <h2 className="title-section tw-border-b-2 tw-border-spacing-y-0.5 tw-border-primary">About us</h2>
               </div>
               <p className="regular-text pb-3">{supplierDetails.description}</p>
             </div>
@@ -96,9 +95,8 @@ const Website = ({ google, setShowSignin, isUserLogin }) => {
             Array.isArray(productDetails) &&
             productDetails.length > 0 && (
               <div className="row Products">
-                <div className="text-center wow fadeInUp">
-                  <h2 className="title-section">Choose your Products</h2>
-                  <div className="divider mx-auto"></div>
+                <div className="fadeInUp tw-flex tw-justify-center">
+                  <h2 className="title-section tw-border-b-2 tw-border-spacing-y-0.5 tw-border-primary">Choose your Products</h2>
                 </div>
                 {productDetails.map((product) => {
                   return products.map((prod) => {

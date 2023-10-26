@@ -39,6 +39,7 @@ const Nav = ({
       });
   }, [isUserLogin, showSignin]);
 
+  const pathStartsWith = (path, route) => path.startsWith(route);
   const hoverVarients = {
     hover: {
       scale: 1.2,
@@ -59,6 +60,15 @@ const Nav = ({
         setIsUserLogin(true);
       });
   };
+
+  const currentRoute = location.pathname;
+
+  const logoClass =
+    pathStartsWith(currentRoute, "/products") ||
+    pathStartsWith(currentRoute, "/contactus") ||
+    pathStartsWith(currentRoute, "/order") ||
+    pathStartsWith(currentRoute, "/terms&conditions") ||
+    pathStartsWith(currentRoute, "/privacypolicy");
   return (
     <header>
       <>
@@ -71,15 +81,7 @@ const Nav = ({
               <Link to="/" className="navbar-brand">
                 <img
                   src="https://cdn.dev.meyi.in/common/img/logo/Plant365.png"
-                  className={`logo ${
-                    activeRoute === "/products" ||
-                    activeRoute === "/contactus" ||
-                    activeRoute === "/order" ||
-                    activeRoute === "/terms&conditions" ||
-                    activeRoute === "/privacypolicy"
-                      ? "dark-logo"
-                      : "normal-logo"
-                  }`}
+                  className={`logo ${logoClass}`}
                   alt=""
                 />
               </Link>
@@ -99,13 +101,14 @@ const Nav = ({
                   <div className="navbar-collapse collapse" id="navbarContent">
                     <ul
                       className={`navbar-nav ml-auto ${
+                        activeRoute.includes("/order") ||
+
                         activeRoute === "/products" ||
                         activeRoute === "/contactus" ||
-                        activeRoute === "/order" ||
                         activeRoute === "/terms&conditions" ||
                         activeRoute === "/privacypolicy"
                           ? "dark-nav"
-                          : null
+                          : ""
                       }`}
                     >
                       <motion.li
@@ -152,6 +155,7 @@ const Nav = ({
                           Products
                         </Link>
                       </motion.li>
+
                       <motion.li
                         variants={hoverVarients}
                         whileHover="hover"

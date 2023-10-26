@@ -1352,6 +1352,20 @@ label {
   list-style: none;
   padding: 20px 0;
 }
+.btn-custom {
+  padding: 0.25rem 0.5rem; 
+}
+.btn-custom-arrow {
+  width: 55px;
+  height: 80px;
+  font-size: 54px;
+  color: #27B643;
+  border: none; 
+}
+
+.btn-custom-arrow:hover {
+  opacity: 0.8;
+}
 
 /* .selected-button {
   color: black;
