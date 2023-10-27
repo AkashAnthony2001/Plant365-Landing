@@ -58,7 +58,7 @@ const Products = ({ initiator }) => {
                     <img src={product.img} alt="" />
                     <br />
                     <Link
-                      to={`/order/${product.Name}`}
+                      to={`/order/${typeof product.Name === 'string' ? product.Name.replace(/ /g, '-') : product.Name}`}
                       state={{ product }}
                       className="btn btn-outline-primary order-button mb-3"
                     >

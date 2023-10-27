@@ -54,14 +54,14 @@ const SuppliersDetails = ({ initiator }) => {
             suppliersDetails.map((supplier, index) => {
               const companyName =
                 (supplier.companyName &&
-                  (supplier.companyName.length > 15
-                    ? supplier.companyName.slice(0, 15) + ".."
+                  (supplier.companyName.length > 25
+                    ? supplier.companyName.slice(0, 25) + ".."
                     : supplier.companyName)) ||
                 "Supplier";
               return (
                 <motion.div
                   whileHover={{ scale: 1.1 }}
-                  className="col-md-2 col-sm-3 col-6"
+                  className="col-md-3 col-sm-3 col-6"
                   onClick={() => {
                     window.location.href = `${process.env.REACT_APP_URL}supplier/${supplier["companySlug"]}`;
                   }}
@@ -75,6 +75,7 @@ const SuppliersDetails = ({ initiator }) => {
                       )}
                     </div>
                     <h5>{companyName}</h5>
+                    
                   </div>
                 </motion.div>
               );

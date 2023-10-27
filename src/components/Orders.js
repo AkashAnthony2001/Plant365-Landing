@@ -62,7 +62,6 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
   const [isMobile, setIsMobile] = useState(
     window.matchMedia("(max-width: 768px)").matches
   );
-
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
     const handleResize = () => {
@@ -309,7 +308,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
           return;
         }
       }
-      //  else if (selectedGrade === null) {
+      // else if (selectedGrade === null) {
       //   setErrorMessage("Please select any Grade");
       //   setShowError(false);
       //   setShowError(true);
@@ -320,6 +319,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
       //   setShowError(true);
       //   return;
       // }
+
       setShowError(false);
       setIsMobileValid(true);
     }
@@ -382,9 +382,8 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
       secondoryAddress,
     } = userAddress;
     const date = new Date(scheduleDate);
-    const deliveryDate = `${date.getFullYear()}-${
-      date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
-    }-${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}`;
+    const deliveryDate = `${date.getFullYear()}-${date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+      }-${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}`;
     const quoteDetails = {
       tenantId: shardId || selectedSupplier.tenantId,
       // cognito_id: sub,
@@ -439,11 +438,14 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
     if (inputNumber.length !== 12) {
       return "Invalid input";
     }
+
     const firstPart = inputNumber.slice(0, 3);
     const hidePart = "******";
     const lastPart = inputNumber.slice(9);
+
     return firstPart + hidePart + lastPart;
   }
+
   return (
     <div
       className="page-section bg-light page-content top-header"
@@ -456,15 +458,13 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
               const activePageIndex = orderFlow.indexOf(currentOrderPage);
               return (
                 <li
-                  className={`${index !== 0 ? "items" : "pr-2"} ${
-                    index <= activePageIndex ? "active" : null
-                  }`}
+                  className={`${index !== 0 ? "items" : "pr-2"} ${index <= activePageIndex ? "active" : null
+                    }`}
                   key={index}
                 >
                   <span
-                    className={`progress-tick ${
-                      index <= activePageIndex ? "activeItem" : "inactiveItem"
-                    }`}
+                    className={`progress-tick ${index <= activePageIndex ? "activeItem" : "inactiveItem"
+                      }`}
                   >
                     {index <= activePageIndex ? (
                       <BsCheck />
@@ -478,9 +478,8 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
             })}
           </ul>
           <div
-            className={`error-container w-25 ml-auto ${
-              showError ? "" : "disable"
-            }`}
+            className={`error-container w-25 ml-auto ${showError ? "" : "disable"
+              }`}
           >
             {errorMessage}
           </div>
@@ -557,39 +556,37 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                     )}
                   </div>
                 </div>
+
                 {isOtpVerified && (
                   <div>
                     <h1 className="form-group text-lg md:text-xl  font-normal">
                       Grades
                     </h1>
                     <div className="row">
-                      <div className="tw-grid sm:tw-grid-cols-8 md:tw-flex-wrap tw-grid-cols-5">
-                        {productSpec.map((grade) => (
-                          <div
-                            className={`grade ${
-                              selectedGrade === grade ? "selected-button" : ""
+                      <div className="tw-grid sm:tw-grid-cols-8 md:tw-flex-wrap tw-grid-cols-5">                        {productSpec.map((grade) => (
+                        <div
+                          className={`grade ${selectedGrade === grade ? "selected-button" : ""
                             }`}
-                            
+                        >
+                          <button
+                            className={`tw-w-16 tw-h-10 tw-m-2`}
+                            style={{
+                              width: "150px",
+                              height: "40px",
+                              backgroundColor:
+                                selectedGrade === grade
+                                  ? "#27B643"
+                                  : "#ececec",
+                              color: selectedGrade === grade ? "white" : "",
+                              margin: "6px",
+                              marginBottom: "0px",
+                            }}
+                            onClick={() => handleGradeSelection(grade)}
                           >
-                            <button
-                              className={`tw-w-16 tw-h-10 tw-m-2`}
-                              style={{
-                                width: "150px",
-                                height: "40px",
-                                backgroundColor:
-                                  selectedGrade === grade
-                                    ? "#27B643"
-                                    : "#ececec",
-                                color: selectedGrade === grade ? "white" : "",
-                                margin: "6px",
-                                marginBottom: "0px",
-                              }}
-                              onClick={() => handleGradeSelection(grade)}
-                            >
-                              {grade.Values}
-                            </button>
-                          </div>
-                        ))}
+                            {grade.Values}
+                          </button>
+                        </div>
+                      ))}
                       </div>
                     </div>
                     {selectedGrade && (
@@ -647,11 +644,11 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                       fontSize: "54px",
                       color: "#27B643",
                     }}
-                    className="btn-custom-arrow"
                     onClick={goToPreviousDate}
                   >
                     &lt;
                   </button>
+
                   {dateRange.length > 0 &&
                     dateRange.map((date, index) => {
                       if (isMobile) {
@@ -659,9 +656,8 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                           return (
                             <button
                               key={date.getDate()}
-                              className={`btn btn-outline-primary text-xs btn-custom ${
-                                selectedDateIndex === index ? "activeDate" : ""
-                              } m-1`}
+                              className={`btn btn-outline-primary text-xs btn-custom ${selectedDateIndex === index ? "activeDate" : ""
+                                } m-1`}
                               onClick={() => handleDateSelection(date, index)}
                             >
                               {weekday[date.getDay()]}
@@ -678,9 +674,8 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         return (
                           <button
                             key={date.getDate()}
-                            className={`btn btn-outline-primary text-sm md:text-base ${
-                              selectedDateIndex === index ? "activeDate" : ""
-                            } m-1`}
+                            className={`btn btn-outline-primary text-sm md:text-base ${selectedDateIndex === index ? "activeDate" : ""
+                              } m-1`}
                             onClick={() => handleDateSelection(date, index)}
                           >
                             {weekday[date.getDay()]}
@@ -705,6 +700,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                   </button>
                 </div>
               </div>
+
               <br />
               <h1 className="form-group text-lg md:text-xl  font-normal">
                 Delivery Address
@@ -952,8 +948,7 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                         `${scheduleDate
                           .getDate()
                           .toString()
-                          .padStart(2, "0")} ${
-                          months[scheduleDate.getMonth()]
+                          .padStart(2, "0")} ${months[scheduleDate.getMonth()]
                         } ${scheduleDate.getFullYear()}`}
                     </p>
                   </div>
@@ -1027,8 +1022,8 @@ const Orders = ({ google, setShowSignin, isUserLogin, user }) => {
                       }}
                     >
                       <p>
-                        {userAddress.primaryAddress}
-                        {userAddress.secondoryAddress}
+                        {userAddress.primaryAddress}{" "}
+                        {userAddress.secondoryAddress}{" "}
                         {userAddress.city}
                       </p>
                       <p>
